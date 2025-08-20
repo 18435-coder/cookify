@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COOKIFY</title>
+    <!-- Tailwind CSS CDN เพื่อการจัดสไตล์อย่างง่ายและรวดเร็ว -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins สำหรับข้อความทั้งหมด -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        /* ส่วนที่ 1: การจัดสไตล์ทั่วไป */
+        body {
+            font-family: 'Poppins', sans-serif; /* ใช้ฟอนต์หลักเป็น Poppins สำหรับทุกอย่าง */
+            background-color: #f0f4f8; /* พื้นหลังสีฟ้าเทาอ่อน (สำหรับกรณีที่รูปภาพโหลดไม่สำเร็จ) */
+            background-image: url('https://placehold.co/1920x1080/f0f4f8/888888?text=Background+Image+Placeholder'); /* Placeholder สำหรับรูปภาพพื้นหลัง */
+            background-size: cover; /* ทำให้รูปภาพครอบคลุมพื้นที่ทั้งหมด */
+            background-position: center; /* จัดตำแหน่งรูปภาพให้อยู่ตรงกลาง */
+            background-repeat: no-repeat; /* ไม่ให้รูปภาพซ้ำ */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #F5F5DC;
+            border-radius: 1.5rem; /* มุมโค้งมน */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        /* ส่วนที่ 2: การจัดสไตล์ฟอนต์ของหัวข้อ COOKIFY */
+        h1 {
+            font-family: 'Poppins', sans-serif; /* เปลี่ยนฟอนต์ของ "COOKIFY" เป็น Poppins */
+            font-size: 8.45rem; /* ปรับขนาดฟอนต์ของ "COOKIFY" ให้ใหญ่ขึ้นอีก 30% */
+            color: #5D4037; /* สีน้ำตาลเข้ม */
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        /* ส่วนที่ 3: การจัดสไตล์ฟอร์มและปุ่ม */
+        textarea, input[type="text"] {
+            border-radius: 0.75rem;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            padding-top: 4rem; /* ปรับระยะห่างด้านบนให้สมดุลกับขนาดฟอนต์ใหม่ */
+            font-size: 2.6rem; /* ปรับขนาดฟอนต์ของ placeholder ให้ใหญ่ขึ้น */
+            width: 100%;
+            box-sizing: center;
+        }
+        .main-button { /* เปลี่ยนชื่อคลาสให้ชัดเจน */
+            background-color: #A9846A;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+            align-self: center;
+        }
+        .main-button:hover {
+            background-color: #5D4037; /* เปลี่ยนสีเมื่อชี้เมาส์เป็นสีน้ำตาลเข้ม */
+        }
+        .show-details-button {
+            background-color: #A9846A;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+            align-self: flex-end;
+            max-width: fit-content;
+        }
+        .show-details-button:hover {
+            background-color: #059669;
+        }
+
+        /* ส่วนที่ 4: การจัดสไตล์ผลลัพธ์และข้อความสถานะ */
+        .recipe-card {
+            background-color: #f8fafc;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .recipe-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .recipe-card p {
+            color: #475569;
+        }
+        .recipe-card ul, .recipe-details-content ol {
+            list-style: disc; /* ใช้ disc สำหรับส่วนผสม */
+            margin-left: 1.25rem;
+            color: #475569;
+        }
+        .recipe-card li {
+            margin-bottom: 0.25rem;
+        }
+        .recipe-details-content ol {
+            list-style: decimal; /* ใช้ decimal สำหรับขั้นตอน */
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #5D4037; /* เปลี่ยนสีตัวโหลดเป็นสีน้ำตาลเข้ม */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #ef4444;
+            font-weight: 500;
+            text-align: center;
+        }
+        .no-results {
+            color: #64748b;
+            text-align: center;
+        }
+        .recipe-details-content {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #A9846A;
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .recipe-details-content.show {
+            display: flex;
+        }
+        .recipe-details-content h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">COOKIFY</h1>
+        <p class="text-center text-gray-600 mb-6">Find your perfect dish with leftovers in your fridge!</p>
+
+        <!-- ย้ายช่องกรอกข้อความและปุ่ม เพื่อป้องกันการทับซ้อน -->
+        <textarea id="ingredientsInput" rows="6" placeholder="type your ingredient" class="mb-5"></textarea>
+
+        <button id="findRecipesBtn" class="main-button mb-4">ค้นหาสูตรอาหาร</button>
+        
+        <div id="loadingSpinner" class="loading-spinner"></div>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="recipesOutput" class="mt-6 flex flex-col gap-4">
+            <!-- ผลลัพธ์สูตรอาหารจะถูกสร้างและแสดงที่นี่ -->
+        </div>
+    </div>
+
+    <script type="module">
+        // =========================================================
+        // ส่วนที่ 1: การจัดการเหตุการณ์และ UI
+        // =========================================================
+
+        // อ้างอิงถึงองค์ประกอบ HTML ที่เราจะใช้งาน
+        const ingredientsInput = document.getElementById('ingredientsInput');
+        const findRecipesBtn = document.getElementById('findRecipesBtn');
+        const recipesOutput = document.getElementById('recipesOutput');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // เมื่อปุ่ม "ค้นหาสูตรอาหาร" ถูกคลิก ให้ทำตามขั้นตอนนี้
+        findRecipesBtn.addEventListener('click', async () => {
+            const ingredients = ingredientsInput.value.trim();
+
+            // ตรวจสอบว่าผู้ใช้ป้อนส่วนผสมหรือไม่
+            if (!ingredients) {
+                errorMessage.textContent = 'โปรดป้อนส่วนผสมบางอย่าง';
+                return;
+            }
+
+            // รีเซ็ตการแสดงผลก่อนเริ่มค้นหาใหม่
+            recipesOutput.innerHTML = '';
+            errorMessage.textContent = '';
+            loadingSpinner.style.display = 'block'; // แสดงตัวหมุนโหลด
+            findRecipesBtn.disabled = true; // ปิดใช้งานปุ่ม
+
+            // =========================================================
+            // ส่วนที่ 2: การเรียกใช้ Gemini API เพื่อค้นหาสูตรอาหาร
+            // =========================================================
+            try {
+                // *****************************************************************
+                // คำแนะนำสำหรับ API Key:
+                // หากคุณรันไฟล์นี้ในเครื่องตัวเอง คุณต้องใส่ API Key ที่นี่
+                // 1. ไปที่ https://aistudio.google.com/app/apikey เพื่อรับ API Key
+                // 2. แทนที่ "YOUR_API_KEY_HERE" ด้วย Key ของคุณ
+                const apiKey = "AIzaSyA1BjdsAIkPMvIsf1fKfLgaqZCZkh67RAA";
+                
+                // ไม่มีการตรวจสอบ API key เนื่องจากได้ใส่ในโค้ดแล้ว
+                // If you were running this on your own machine, you might want to uncomment the following block to handle a missing key.
+                // if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+                //     errorMessage.textContent = 'โปรดใส่ Gemini API Key ของคุณในโค้ดเพื่อใช้งาน';
+                //     loadingSpinner.style.display = 'none';
+                //     findRecipesBtn.disabled = false;
+                //     return;
+                // }
+                // *****************************************************************
+
+                // สร้าง prompt เพื่อส่งไปให้ Gemini API
+                const prompt = `จากส่วนผสมต่อไปนี้ ให้แนะนำ 5-7 สูตรอาหารที่หลากหลายและต้องผ่านการปรุงด้วยความร้อนเท่านั้น (cooking recipes only) สำหรับแต่ละสูตร ให้ระบุชื่อสูตรอาหาร, รายการส่วนผสมที่จำเป็น, คำอธิบายสั้นๆ, เวลาเตรียมโดยประมาณ (เช่น "30 นาที"), ระดับความยาก (เช่น "ง่าย", "ปานกลาง", "ยาก"), และขั้นตอนการทำแบบละเอียดเป็นข้อๆ.
+                ส่วนผสม: ${ingredients}
+                `;
+
+                const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+
+                // กำหนด payload สำหรับการเรียก API
+                const payload = {
+                    contents: chatHistory,
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "ARRAY",
+                            items: {
+                                type: "OBJECT",
+                                properties: {
+                                    "recipeName": { "type": "STRING" },
+                                    "ingredients": {
+                                        "type": "ARRAY",
+                                        "items": { "type": "STRING" }
+                                    },
+                                    "description": { "type": "STRING" },
+                                    "prepTime": { "type": "STRING" },
+                                    "difficulty": { "type": "STRING" },
+                                    "instructions": {
+                                        "type": "ARRAY",
+                                        "items": { "type": "STRING" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                // ส่งคำขอไปยัง Gemini API
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // ตรวจสอบสถานะการตอบกลับของ API
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API error: ${response.status} ${response.statusText} - ${errorData.error.message}`);
+                }
+
+                const result = await response.json();
+                
+                // =========================================================
+                // ส่วนที่ 3: การประมวลผลและแสดงผลสูตรอาหาร
+                // =========================================================
+
+                // ตรวจสอบว่ามีข้อมูลสูตรอาหารหรือไม่
+                if (result.candidates && result.candidates.length > 0) {
+                    const jsonString = result.candidates[0].content.parts[0].text;
+                    const recipes = JSON.parse(jsonString);
+
+                    if (recipes.length === 0) {
+                        recipesOutput.innerHTML = '<p class="no-results">ไม่พบสูตรอาหารสำหรับส่วนผสมของคุณ ลองเพิ่มส่วนผสมอีก!</p>';
+                    } else {
+                        // วนลูปเพื่อสร้างการ์ดสูตรอาหารแต่ละรายการ
+                        recipes.forEach(recipe => {
+                            const recipeCard = document.createElement('div');
+                            recipeCard.className = 'recipe-card';
+                            recipeCard.innerHTML = `
+                                <h3>${recipe.recipeName}</h3>
+                                <p>ส่วนผสม:</p>
+                                <ul>
+                                    ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                                </ul>
+                                <button class="show-details-button">แสดงรายละเอียดสูตรอาหาร</button>
+                                <div class="recipe-details-content">
+                                    <h4>คำอธิบาย:</h4>
+                                    <p>${recipe.description || 'ไม่มีคำอธิบาย'}</p>
+                                    <h4>ข้อมูลเพิ่มเติม:</h4>
+                                    <p>เวลาเตรียม: ${recipe.prepTime || 'ไม่ระบุ'}</p>
+                                    <p>ความยาก: ${recipe.difficulty || 'ไม่ระบุ'}</p>
+                                    <h4>ขั้นตอนการทำ:</h4>
+                                    <ol>
+                                        ${(recipe.instructions && recipe.instructions.length > 0) 
+                                            ? recipe.instructions.map(step => `<li>${step}</li>`).join('')
+                                            : 'ไม่มีขั้นตอนการทำโดยละเอียด'}
+                                    </ol>
+                                </div>
+                            `;
+                            
+                            // เพิ่มเหตุการณ์คลิกสำหรับปุ่มแสดงรายละเอียด
+                            recipeCard.querySelector('.show-details-button').addEventListener('click', (event) => {
+                                const detailsContent = event.target.nextElementSibling;
+                                detailsContent.classList.toggle('show');
+                                if (detailsContent.classList.contains('show')) {
+                                    event.target.textContent = 'ซ่อนรายละเอียด';
+                                } else {
+                                    event.target.textContent = 'แสดงรายละเอียดสูตรอาหาร';
+                                }
+                            });
+
+                            recipesOutput.appendChild(recipeCard);
+                        });
+                    }
+                } else {
+                    errorMessage.textContent = 'ไม่ได้รับข้อมูลสูตรอาหารที่ถูกต้องจาก API โปรดลองอีกครั้ง';
+                }
+
+            } catch (error) {
+                console.error("Error fetching recipes:", error);
+                errorMessage.textContent = `ไม่สามารถดึงสูตรอาหารได้: ${error.message} โปรดลองอีกครั้ง`;
+            } finally {
+                // ซ่อนตัวหมุนโหลดและเปิดใช้งานปุ่มเมื่อเสร็จสิ้น
+                loadingSpinner.style.display = 'none';
+                findRecipesBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
